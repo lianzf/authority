@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.framework.persistence.mapper.SysResourceMapper">
+	<!-- 根据情况定制属性列表
+	<resultMap id="RM.SysResource" type="com.framework.po.SysResource">
+		<result property="id" column="id"/>
+		<result property="resName" column="res_name"/>
+		<result property="resString" column="res_string"/>
+		<result property="parentId" column="parent_id"/>
+	</resultMap>
+	-->
+
+	<!-- 查询公用抽取的列 -->
+	<sql id="columns_all">
+	    <![CDATA[
+		id,res_name,res_string,parent_id
+	    ]]>
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO t_sys_resource (
+        	id,
+        	res_name,
+        	res_string,
+        	parent_id
+        ) VALUES (
+        	#{id},
+        	#{resName},
+        	#{resString},
+        	#{parentId}
+        )
+    ]]>
+	</insert>
+
+	<update id="update" parameterType="com.framework.persistence.po.SysResource">
+        UPDATE t_sys_resource 
+		<set>
+	        <if test="resName != null">
+	        	res_name = #{resName},
+	        </if>
+	        <if test="resString != null">
+	        	res_string = #{resString},
+	        </if>
+	        <if test="parentId != null">
+	        	parent_id = #{parentId}
+	        </if>
+	    </set>
+        WHERE
+	        id = #{id}
+	</update>
+
+	<delete id="deleteById">
+        DELETE FROM t_sys_resource WHERE
+        id = #{id}
+	</delete>
+
+	<select id="getById" resultType="com.framework.persistence.po.SysResource">
+		SELECT
+			*
+		FROM
+			t_sys_resource 
+	    WHERE
+	        id = #{id} 
+	</select>
+
+	<!-- 查询条件where,如果有时间范围查询，参数必须是startTime 和 endTime -->
+	<sql id="where">
+		<where>
+			<if test="id != null">
+				AND id = #{id}
+			</if>
+			<if test="resName != null">
+				AND res_name = #{resName}
+			</if>
+			<if test="resString != null">
+				AND res_string = #{resString}
+			</if>
+			<if test="parentId != null">
+				AND parent_id = #{parentId}
+			</if>
+		</where>
+	</sql>
+	
+	<sql id="whereForPo">
+		<where>
+			<if test="id != null">
+				AND id = #{id}
+			</if>
+			<if test="resName != null">
+				AND res_name = #{resName}
+			</if>
+			<if test="resString != null">
+				AND res_string = #{resString}
+			</if>
+			<if test="parentId != null">
+				AND parent_id = #{parentId}
+			</if>
+		</where>
+	</sql>	
+
+	<select id="count" parameterType="java.util.Map" resultType="int">
+		SELECT count(*) FROM t_sys_resource
+		<include refid="where" />
+	</select>
+
+	<select id="getListByMap" parameterType="java.util.Map" resultType="com.framework.persistence.po.SysResource">
+		SELECT 
+			*
+		FROM
+			t_sys_resource 
+	    <include refid="where" />
+	    ${limit}
+	</select>
+	
+	<select id="getListByPo" parameterType="com.framework.persistence.po.SysResource" resultType="com.framework.persistence.po.SysResource">
+		SELECT 
+			*
+		FROM 
+			t_sys_resource 
+	    <include refid="whereForPo" />
+	</select>
+	
+	<select id="getResByUserId" resultType="java.lang.String">
+	    select 
+	    	c.res_string
+	    from 
+	    	t_sys_user_role a,
+	    	t_sys_role_resource b,
+	    	t_sys_resource c
+	    where
+	    	a.role_id = b.role_id
+	    and b.res_id = c.id
+	    and a.user_id = #{userId}
+	</select>
+</mapper>
+

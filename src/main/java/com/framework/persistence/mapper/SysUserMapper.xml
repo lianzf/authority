@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.framework.persistence.mapper.SysUserMapper">
+	<!-- 根据情况定制属性列表
+	<resultMap id="RM.SysUser" type="com.framework.po.SysUser">
+		<result property="userId" column="user_id"/>
+		<result property="userAccount" column="user_account"/>
+		<result property="userName" column="user_name"/>
+		<result property="password" column="password"/>
+		<result property="status" column="status"/>
+		<result property="loginTime" column="login_time"/>
+		<result property="createTime" column="create_time"/>
+	</resultMap>
+	-->
+
+	<!-- 查询公用抽取的列 -->
+	<sql id="columns_all">
+	    <![CDATA[
+		user_id,user_account,user_name,password,status,login_time,create_time
+	    ]]>
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="userId">
+    <![CDATA[
+        INSERT INTO t_sys_user (
+        	user_id,
+        	user_account,
+        	user_name,
+        	password,
+        	status,
+        	login_time,
+        	create_time
+        ) VALUES (
+        	#{userId},
+        	#{userAccount},
+        	#{userName},
+        	#{password},
+        	#{status},
+        	#{loginTime},
+        	#{createTime}
+        )
+    ]]>
+	</insert>
+
+	<update id="update" parameterType="com.framework.persistence.po.SysUser">
+        UPDATE t_sys_user 
+		<set>
+	        <if test="userAccount != null">
+	        	user_account = #{userAccount},
+	        </if>
+	        <if test="userName != null">
+	        	user_name = #{userName},
+	        </if>
+	        <if test="password != null">
+	        	password = #{password},
+	        </if>
+	        <if test="status != null">
+	        	status = #{status},
+	        </if>
+	        <if test="loginTime != null">
+	        	login_time = #{loginTime},
+	        </if>
+	        <if test="createTime != null">
+	        	create_time = #{createTime}
+	        </if>
+	    </set>
+        WHERE
+	        user_id = #{userId}
+	</update>
+
+	<delete id="deleteById">
+        DELETE FROM t_sys_user WHERE
+        user_id = #{userId}
+	</delete>
+
+	<select id="getById" resultType="com.framework.persistence.po.SysUser">
+		SELECT
+			*
+		FROM
+			t_sys_user 
+	    WHERE
+	        user_id = #{userId} 
+	</select>
+
+	<!-- 查询条件where,如果有时间范围查询，参数必须是startTime 和 endTime -->
+	<sql id="where">
+		<where>
+			<if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+			<if test="userAccount != null">
+				AND user_account = #{userAccount}
+			</if>
+			<if test="userName != null">
+				AND user_name = #{userName}
+			</if>
+			<if test="password != null">
+				AND password = #{password}
+			</if>
+			<if test="status != null">
+				AND status = #{status}
+			</if>
+			<if test="loginTime != null">
+				AND login_time = #{loginTime}
+			</if>
+			<if test="startTime != null">
+	       	<![CDATA[
+				AND create_time >= #{startTime} 
+			]]>
+			</if>
+			<if test="endTime != null">
+			<![CDATA[
+				AND create_time < #{endTime}
+			]]>
+			</if>
+		</where>
+	</sql>
+	
+	<sql id="whereForPo">
+		<where>
+			<if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+			<if test="userAccount != null">
+				AND user_account = #{userAccount}
+			</if>
+			<if test="userName != null">
+				AND user_name = #{userName}
+			</if>
+			<if test="password != null">
+				AND password = #{password}
+			</if>
+			<if test="status != null">
+				AND status = #{status}
+			</if>
+		</where>
+	</sql>	
+
+	<select id="count" parameterType="java.util.Map" resultType="int">
+		SELECT count(*) FROM t_sys_user
+		<include refid="where" />
+	</select>
+
+	<select id="getListByMap" parameterType="java.util.Map" resultType="com.framework.persistence.po.SysUser">
+		SELECT 
+			*
+		FROM
+			t_sys_user 
+	    <include refid="where" />
+	    ${limit}
+	</select>
+	
+	<select id="getListByPo" parameterType="com.framework.persistence.po.SysUser" resultType="com.framework.persistence.po.SysUser">
+		SELECT 
+			*
+		FROM 
+			t_sys_user 
+	    <include refid="whereForPo" />
+	</select>
+</mapper>
+
