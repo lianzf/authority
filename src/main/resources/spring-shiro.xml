@@ -17,6 +17,15 @@
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="realm" ref="customAuthorizingRealm" />
 	</bean>
+	
+	<bean id="customAuthorizingRealm" class="com.framework.core.shiro.realm.CustomAuthorizingRealm">
+	    <!-- MD5加密 -->  
+	    <property name="credentialsMatcher">  
+	        <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">  
+	            <property name="hashAlgorithmName" value="MD5" />  
+	        </bean>  
+	    </property>  
+	</bean>
 
 	<bean
 		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">

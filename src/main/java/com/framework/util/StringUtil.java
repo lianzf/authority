@@ -6,8 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.crypto.hash.Md5Hash;
 
-import com.framework.common.Constant;
 
 public class StringUtil {
 
@@ -104,5 +104,10 @@ public class StringUtil {
 		}
 		matcher.appendTail(sb);
 		return sb.toString();
+	}
+	
+	public static void main(String[] args) {
+		String cryptedPwd = new Md5Hash("admin").toString();
+		System.out.println(cryptedPwd);
 	}
 }

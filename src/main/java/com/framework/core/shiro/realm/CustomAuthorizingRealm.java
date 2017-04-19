@@ -27,7 +27,6 @@ import com.framework.service.SysResourceService;
 import com.framework.service.SysUserRoleService;
 import com.framework.service.SysUserService;
 
-@Service(value = "customAuthorizingRealm")
 public class CustomAuthorizingRealm extends AuthorizingRealm {
 
 	@Autowired
