@@ -140,7 +140,7 @@
 		function _fnColumnOptions( oSettings, iCol, oOptions )
 		{
 			var oCol = oSettings.aoColumns[ iCol ];
-			if(oCol.sName != '')alert(1+"--"+oCol.sName+'--'+oCol.bSortable+'---'+oCol.sSortingClass+'--'+oCol.asSorting);
+			
 			/* User specified column options */
 			if ( oOptions !== undefined && oOptions !== null )
 			{
@@ -168,6 +168,7 @@
 				}
 				_fnMap( oCol, oOptions, "aDataSort" );
 			}
+		
 			/* Cache the data get and set functions for speed */
 			var mRender = oCol.mRender ? _fnGetObjectDataFn( oCol.mRender ) : null;
 			var mData = _fnGetObjectDataFn( oCol.mData );
@@ -195,9 +196,6 @@
 			{
 				oCol.sSortingClass = oSettings.oClasses.sSortableNone;
 				oCol.sSortingClassJUI = "";
-			}else if(oCol.bSortable && $.inArray('asc', oCol.asSorting) != -1 && $.inArray('desc', oCol.asSorting) != -1){
-				oCol.sSortingClass = oSettings.oClasses.sSortable;
-				oCol.sSortingClassJUI = oSettings.oClasses.sSortJUI;
 			}
 			else if ( $.inArray('asc', oCol.asSorting) == -1 && $.inArray('desc', oCol.asSorting) == -1 )
 			{
@@ -1122,9 +1120,6 @@
 				{
 					var oCol = oSettings.aoColumns[i];
 					nTd = document.createElement( oCol.sCellType );
-					if(oCol.eName){
-						nTd.setAttribute('type',oCol.eName);
-					}
 		
 					/* Render if needed - if bUseRendered is true then we already have the rendered
 					 * value in the data source - so can just use that
@@ -1188,10 +1183,10 @@
 						nTh.setAttribute('aria-controls', oSettings.sTableId);
 					}
 		
-					/*if ( oSettings.aoColumns[i].sClass !== null )
+					if ( oSettings.aoColumns[i].sClass !== null )
 					{
 						$(nTh).addClass( oSettings.aoColumns[i].sClass );
-					}*/
+					}
 					
 					/* Set the title of the column if it is user defined (not what was auto detected) */
 					if ( oSettings.aoColumns[i].sTitle != nTh.innerHTML )
@@ -1211,10 +1206,10 @@
 					nTh.innerHTML = oSettings.aoColumns[i].sTitle;
 					nTh.setAttribute('tabindex', '0');
 					
-					/*if ( oSettings.aoColumns[i].sClass !== null )
+					if ( oSettings.aoColumns[i].sClass !== null )
 					{
 						$(nTh).addClass( oSettings.aoColumns[i].sClass );
-					}*/
+					}
 					
 					nTr.appendChild( nTh );
 				}
@@ -1555,7 +1550,8 @@
 				}
 				
 				/* Put the draw table into the dom */
-				for ( i=0, iLen=anRows.length ; i<iLen ; i++ ){
+				for ( i=0, iLen=anRows.length ; i<iLen ; i++ )
+				{
 					nAddFrag.appendChild( anRows[i] );
 				}
 				
@@ -1563,20 +1559,6 @@
 				if ( nBodyPar !== null )
 				{
 					nBodyPar.appendChild( oSettings.nTBody );
-				}
-				//添加行元素的回调事件
-				if(oSettings.aiDisplay.length !== 0){
-					var iStart = oSettings._iDisplayStart;
-					var iEnd = oSettings._iDisplayEnd;
-					
-					if ( oSettings.oFeatures.bServerSide )	{
-						iStart = 0;
-						iEnd = oSettings.aoData.length;
-					}
-					
-					for ( i=0, iLen=anRows.length,j=iStart ; i<iLen ; i++,j++ ){
-						_fnCallbackFire( oSettings, 'aoRowFinishCallback', null, [anRows[i], oSettings.aoData[ oSettings.aiDisplay[j] ]._aData, i, j] );
-					}
 				}
 			}
 			
@@ -1978,8 +1960,8 @@
 					
 					for ( j=0 ; j<aDataSort.length ; j++ )
 					{
-						aoData.push( { "name": "iSortCol_"+oSettings.aoColumns[aaSort[i][0]].eName,  "value": aDataSort[j] } );
-						aoData.push( { "name": "sSortDir_"+oSettings.aoColumns[aaSort[i][0]].eName,  "value": aaSort[i][1] } );
+						aoData.push( { "name": "iSortCol_"+iCounter,  "value": aDataSort[j] } );
+						aoData.push( { "name": "sSortDir_"+iCounter,  "value": aaSort[i][1] } );
 						iCounter++;
 					}
 				}
@@ -1987,9 +1969,7 @@
 				
 				for ( i=0 ; i<iColumns ; i++ )
 				{
-					if(oSettings.aoColumns[i].eName){
-						aoData.push( { "name": 'bSortable_'+oSettings.aoColumns[i].eName,  "value": oSettings.aoColumns[i].bSortable } );
-					}
+					aoData.push( { "name": "bSortable_"+i,  "value": oSettings.aoColumns[i].bSortable } );
 				}
 			}
 			
@@ -2092,66 +2072,62 @@
 		function _fnFeatureHtmlFilter ( oSettings )
 		{
 			var oPreviousSearch = oSettings.oPreviousSearch;
+			
 			var sSearchStr = oSettings.oLanguage.sSearch;
 			sSearchStr = (sSearchStr.indexOf('_INPUT_') !== -1) ?
-			sSearchStr.replace('_INPUT_', '<input type="text" />') :
-			sSearchStr==="" ? '<input type="text" />' : sSearchStr+' <input type="text" />';
+			  sSearchStr.replace('_INPUT_', '<input type="text" />') :
+			  sSearchStr==="" ? '<input type="text" />' : sSearchStr+' <input type="text" />';
 			
 			var nFilter = document.createElement( 'div' );
 			nFilter.className = oSettings.oClasses.sFilter;
 			nFilter.innerHTML = '<label>'+sSearchStr+'</label>';
-			if ( !oSettings.aanFeatures.f){
+			if ( !oSettings.aanFeatures.f )
+			{
 				nFilter.id = oSettings.sTableId+'_filter';
 			}
 			
 			var jqFilter = $('input[type="text"]', nFilter);
-
+		
 			// Store a reference to the input element, so other input elements could be
 			// added to the filter wrapper if needed (submit button for example)
 			nFilter._DT_Input = jqFilter[0];
+		
 			jqFilter.val( oPreviousSearch.sSearch.replace('"','&quot;') );
-			
-			var eventKey = "keyup.DT";
-			if(oSettings.oFeatures.bServerSide){
-				eventKey = "keypress.DT";
-			}
-
-			jqFilter.attr('aria-controls', oSettings.sTableId).bind(eventKey, function(e) {
-				/* Prevent form submission */
-				if (!oSettings.oFeatures.bServerSide || e.keyCode == 13 ){
-					/* Update all other filter input elements for the new display */
-					var n = oSettings.aanFeatures.f;
-					var val = this.value==="" ? "" : $.trim(this.value); // mental IE8 fix :-(
-					this.value = val;
-
-					for ( var i=0, iLen=n.length ; i<iLen ; i++ ){
-						if ( n[i] != $(this).parents('div.dataTables_filter')[0] )
-						{
-							$(n[i]._DT_Input).val( val );
-						}
-					}
-					
-					/* Now do the filter */
-					if ( val != oPreviousSearch.sSearch){
-						oSettings.oApi._fnFilterComplete( oSettings, { 
-							"sSearch": val, 
-							"bRegex": oPreviousSearch.bRegex,
-							"bSmart": oPreviousSearch.bSmart ,
-							"bCaseInsensitive": oPreviousSearch.bCaseInsensitive 
-						} );
+			jqFilter.bind( 'keyup.DT', function(e) {
+				/* Update all other filter input elements for the new display */
+				var n = oSettings.aanFeatures.f;
+				var val = this.value==="" ? "" : this.value; // mental IE8 fix :-(
+		
+				for ( var i=0, iLen=n.length ; i<iLen ; i++ )
+				{
+					if ( n[i] != $(this).parents('div.dataTables_filter')[0] )
+					{
+						$(n[i]._DT_Input).val( val );
 					}
 				}
-			});
-			
-			jqFilter.attr('aria-controls', oSettings.sTableId);
-			if(!oSettings.oFeatures.bServerSide){
-				jqFilter.bind( 'keypress.DT', function(e) {
+				
+				/* Now do the filter */
+				if ( val != oPreviousSearch.sSearch )
+				{
+					_fnFilterComplete( oSettings, { 
+						"sSearch": val, 
+						"bRegex": oPreviousSearch.bRegex,
+						"bSmart": oPreviousSearch.bSmart ,
+						"bCaseInsensitive": oPreviousSearch.bCaseInsensitive 
+					} );
+				}
+			} );
+		
+			jqFilter
+				.attr('aria-controls', oSettings.sTableId)
+				.bind( 'keypress.DT', function(e) {
 					/* Prevent form submission */
-					if (e.keyCode == 13){
+					if ( e.keyCode == 13 )
+					{
 						return false;
 					}
-				});
-			}
+				}
+			);
 			
 			return nFilter;
 		}
@@ -6524,7 +6500,6 @@
 			_fnCallbackReg( oSettings, 'aoStateLoadParams',    oInit.fnStateLoadParams,   'user' );
 			_fnCallbackReg( oSettings, 'aoStateLoaded',        oInit.fnStateLoaded,       'user' );
 			_fnCallbackReg( oSettings, 'aoRowCallback',        oInit.fnRowCallback,       'user' );
-			_fnCallbackReg( oSettings, 'aoRowFinishCallback',        oInit.fnRowFinishCallback,       'user' );
 			_fnCallbackReg( oSettings, 'aoRowCreatedCallback', oInit.fnCreatedRow,        'user' );
 			_fnCallbackReg( oSettings, 'aoHeaderCallback',     oInit.fnHeaderCallback,    'user' );
 			_fnCallbackReg( oSettings, 'aoFooterCallback',     oInit.fnFooterCallback,    'user' );
@@ -6695,11 +6670,12 @@
 				
 				_fnAddColumn( oSettings, anThs ? anThs[i] : null );
 			}
-
+			
 			/* Apply the column definitions */
 			_fnApplyColumnDefs( oSettings, oInit.aoColumnDefs, aoColumnsInit, function (iCol, oDef) {
 				_fnColumnOptions( oSettings, iCol, oDef );
 			} );
+			
 			
 			/*
 			 * Sorting
@@ -8723,7 +8699,6 @@
 		 *    } );
 		 */
 		"fnRowCallback": null,
-		"fnRowFinishCallback" : null,
 	
 	
 		/**
@@ -10940,7 +10915,6 @@
 		 *  @default []
 		 */
 		"aoRowCallback": [],
-		"aoRowFinishCallback":[],
 		
 		/**
 		 * Callback functions for the header on each draw.

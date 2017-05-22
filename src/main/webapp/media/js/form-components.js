@@ -120,14 +120,14 @@ var FormComponents = function () {
         $('.date-range').daterangepicker(
             {
                 opens: (App.isRTL() ? 'left' : 'right'),
-                format: 'yyyy/MM/dd',
+                format: 'MM/dd/yyyy',
                 separator: ' to ',
                 startDate: Date.today().add({
                     days: -29
                 }),
                 endDate: Date.today(),
-                minDate: '2012/01/01',
-                maxDate: '2014/12/31',
+                minDate: '01/01/2012',
+                maxDate: '12/31/2014',
             }
         );
 
@@ -149,14 +149,14 @@ var FormComponents = function () {
                     })]
             },
             opens: (App.isRTL() ? 'left' : 'right'),
-            format: 'yyyy/MM/dd',
+            format: 'MM/dd/yyyy',
             separator: ' to ',
             startDate: Date.today().add({
                 days: -29
             }),
             endDate: Date.today(),
-            minDate: '2012/01/01',
-            maxDate: '2014/12/31',
+            minDate: '01/01/2012',
+            maxDate: '12/31/2014',
             locale: {
                 applyLabel: 'Submit',
                 fromLabel: 'From',
@@ -199,14 +199,14 @@ var FormComponents = function () {
                     })]
             },
             opens: (App.isRTL() ? 'left' : 'right'),
-            format: 'yyyy/MM/dd',
+            format: 'MM/dd/yyyy',
             separator: ' to ',
             startDate: Date.today().add({
                 days: -29
             }),
             endDate: Date.today(),
-            minDate: '2012/01/01',
-            maxDate: '2014/12/31',
+            minDate: '01/01/2012',
+            maxDate: '12/31/2014',
             locale: {
                 applyLabel: 'Submit',
                 fromLabel: 'From',

@@ -14,15 +14,18 @@ var Login = function () {
 	                },
 	                password: {
 	                    required: true
+	                },
+	                remember: {
+	                    required: false
 	                }
 	            },
 
 	            messages: {
 	                username: {
-	                    required: "用户名不能为空"
+	                    required: "Username is required."
 	                },
 	                password: {
-	                    required: "密码不能为空"
+	                    required: "Password is required."
 	                }
 	            },
 
@@ -45,14 +48,14 @@ var Login = function () {
 	            },
 
 	            submitHandler: function (form) {
-	                window.location.href = "index.jsp";
+	                window.location.href = "index.html";
 	            }
 	        });
 
 	        $('.login-form input').keypress(function (e) {
 	            if (e.which == 13) {
 	                if ($('.login-form').validate().form()) {
-	                    window.location.href = "index.jsp";
+	                    window.location.href = "index.html";
 	                }
 	                return false;
 	            }

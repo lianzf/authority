@@ -171,16 +171,6 @@
 
                     $element.find('>div').css('left', (percent - 75) + "%");
                   });
-                  
-                  function clickOver(moving,_this,$myCheckBox){
-                	  if (moving)
-                          if (parseInt(_this.parent().css('left')) < -25)
-                            $myCheckBox.attr('checked', false);
-                          else $myCheckBox.attr('checked', true);
-                        else $myCheckBox.attr("checked", !$myCheckBox.is(":checked"));
-
-                        $myCheckBox.trigger('change');
-                  }
 
                   $(this).on('click touchend', function (e) {
                     var $target = $(e.target)
@@ -189,21 +179,14 @@
                     e.stopImmediatePropagation();
                     e.preventDefault();
                     $(this).off('mouseleave');
-                    
-                    var _this = $(this);
-                    if(options.confirm) {
-                    	App.Modal.confirm(options.content,{
-                    		okfn : function(){
-                                clickOver(moving,_this,$myCheckBox);
-                                App.Modal.close();
-                    		},
-                    		title : options.title
-                    	});
-                    	
-                    	return;
-                    }
-                    
-                    clickOver(moving,_this,$myCheckBox);
+
+                    if (moving)
+                      if (parseInt($(this).parent().css('left')) < -25)
+                        $myCheckBox.attr('checked', false);
+                      else $myCheckBox.attr('checked', true);
+                    else $myCheckBox.attr("checked", !$myCheckBox.is(":checked"));
+
+                    $myCheckBox.trigger('change');
                   });
 
                   $(this).on('mouseleave', function (e) {
@@ -272,9 +255,6 @@
   $.fn.toggleButtons.defaults = {
     onChange: function () {
     },
-    confirm:false,
-    content : '你确认操作吗？',
-    title : '确认提示框',
     width: 100,
     height: 25,
     font: {},

@@ -2,12 +2,7 @@ var FormValidation = function () {
 
 
     return {
-        //main function to initiate the module
         init: function () {
-
-            // for more info visit the official plugin documentation: 
-            // http://docs.jquery.com/Plugins/Validation
-
             var form1 = $('#form_sample_1');
             var error1 = $('.alert-error', form1);
             var success1 = $('.alert-success', form1);

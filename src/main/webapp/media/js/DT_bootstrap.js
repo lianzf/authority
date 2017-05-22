@@ -1,11 +1,57 @@
 /* Set the defaults for DataTables initialisation */
 $.extend( true, $.fn.dataTable.defaults, {
-	"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-	"sPaginationType": "bootstrap",
-	"oLanguage": {
-		"sLengthMenu": "_MENU_ records per page"
-	}
-} );
+	"bDestroy" : true,
+	"sServerMethod": "POST",
+	"bServerSide" : true,
+	'bStateSave' : false,
+	"bAutoWidth" : false,
+	"async":false,
+	"ordering":false,
+	"bPaginate" : true,
+	"bProcessing" : false,
+	"bFilter" : false,
+	"bLengthChange": false,
+	"aoColumnDefs": [{
+		sDefaultContent: '',
+		aTargets: [ '_all' ]
+	}],
+	/*"aLengthMenu" : [ [ 5, 10, 15, 20 ],
+			[ 5, 10, 15, 20 ] // change per
+	],*/
+	"iDisplayLength" : 10,
+	"sDom" : "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+	"sPaginationType" : "bootstrap",
+	"oLanguage" : {
+        "oAria": {
+            "sSortAscending": ": 升序排列",
+            "sSortDescending": ": 降序排列"
+        },
+        "oPaginate": {
+            "sFirst": "首页",
+            "sLast": "末页",
+            "sNext": "下页",
+            "sPrevious": "上页"
+        },
+        "sEmptyTable": "没有相关记录",
+        "sInfo": "第 _START_ 到 _END_ 条记录，共 _TOTAL_ 条",
+        "sInfoEmpty": "第 0 到 0 条记录，共 0 条",
+        "sInfoFiltered": "(从 _MAX_ 条记录中检索)",
+        "sInfoPostFix": "",
+        "sDecimal": "",
+        "sThousands": ",",
+        "sLengthMenu": "每页显示条数: _MENU_",
+        "sLoadingRecords": "正在载入...",
+        "sProcessing": "正在载入...",
+        "sSearch": "搜索:",
+        "sSearchPlaceholder": "",
+        "sUrl": "",
+        "sZeroRecords": "没有相关记录"
+    },
+    "fnInitComplete": function(oSettings, json) {
+    	$("[role='grid'] .row-fluid:eq(0)").remove();
+    }
+}
+ );
 
 
 /* Default class modification */
@@ -40,20 +86,16 @@ $.extend( $.fn.dataTableExt.oPagination, {
 					fnDraw( oSettings );
 				}
 			};
-			
+
 			$(nPaging).addClass('pagination').append(
 				'<ul>'+
-					'<li class="first disabled"><a href="#">'+oLang.sFirst+'</a></li>'+//此处添加
-					'<li class="prev disabled"><a href="#">'+oLang.sPrevious+'</a></li>'+
-					'<li class="next disabled"><a href="#">'+oLang.sNext+'</a></li>'+
-					'<li class="last disabled"><a href="#">'+oLang.sLast+'</a></li>'+//此处添加
+					'<li class="prev disabled"><a href="#">&larr; <span class="hidden-480">'+oLang.sPrevious+'</span></a></li>'+
+					'<li class="next disabled"><a href="#"><span class="hidden-480">'+oLang.sNext+'</span> &rarr; </a></li>'+
 				'</ul>'
 			);
 			var els = $('a', nPaging);
-			$(els[0]).bind( 'click.DT', { action: "first" }, fnClickHandler );//此处添加
-			$(els[1]).bind( 'click.DT', { action: "previous" }, fnClickHandler );
-			$(els[2]).bind( 'click.DT', { action: "next" }, fnClickHandler );
-			$(els[3]).bind( 'click.DT', { action: "last" }, fnClickHandler );//此处添加
+			$(els[0]).bind( 'click.DT', { action: "previous" }, fnClickHandler );
+			$(els[1]).bind( 'click.DT', { action: "next" }, fnClickHandler );
 		},
 
 		"fnUpdate": function ( oSettings, fnDraw ) {
@@ -79,15 +121,13 @@ $.extend( $.fn.dataTableExt.oPagination, {
 
 			for ( i=0, iLen=an.length ; i<iLen ; i++ ) {
 				// Remove the middle elements
-				//$('li:gt(0)', an[i]).filter(':not(:last)').remove();
-				$('li:gt(1)', an[i]).filter(':lt(-2)').remove();//此处修改 $('li:gt(0)', an[i]).filter(':not(:last)').remove();
+				$('li:gt(0)', an[i]).filter(':not(:last)').remove();
 
 				// Add the new list items and their event handlers
 				for ( j=iStart ; j<=iEnd ; j++ ) {
 					sClass = (j==oPaging.iPage+1) ? 'class="active"' : '';
 					$('<li '+sClass+'><a href="#">'+j+'</a></li>')
-						//.insertBefore( $('li:last', an[i])[0] )
-						.insertBefore( $('li:eq(-2)', an[i])[0] )//此处修改 .insertBefore( $('li:last', an[i])[0] )
+						.insertBefore( $('li:last', an[i])[0] )
 						.bind('click', function (e) {
 							e.preventDefault();
 							oSettings._iDisplayStart = (parseInt($('a', this).text(),10)-1) * oPaging.iLength;
@@ -96,28 +136,16 @@ $.extend( $.fn.dataTableExt.oPagination, {
 				}
 
 				// Add / remove disabled classes from the static elements
-//				if ( oPaging.iPage === 0 ) {
-//					$('li:first', an[i]).addClass('disabled');
-//				} else {
-//					$('li:first', an[i]).removeClass('disabled');
-//				}
-//
-//				if ( oPaging.iPage === oPaging.iTotalPages-1 || oPaging.iTotalPages === 0 ) {
-//					$('li:last', an[i]).addClass('disabled');
-//				} else {
-//					$('li:last', an[i]).removeClass('disabled');
-//				}
-				
 				if ( oPaging.iPage === 0 ) {
-					$('li:lt(2)', an[i]).addClass('disabled'); //此处修改 $('li:first', an[i]).addClass('disabled');
+					$('li:first', an[i]).addClass('disabled');
 				} else {
-					$('li:lt(2)', an[i]).removeClass('disabled'); //此处修改$('li:first', an[i]).removeClass('disabled');
+					$('li:first', an[i]).removeClass('disabled');
 				}
 
 				if ( oPaging.iPage === oPaging.iTotalPages-1 || oPaging.iTotalPages === 0 ) {
-					$('li:gt(-3)', an[i]).addClass('disabled'); //此处修改$('li:last', an[i]).addClass('disabled');
+					$('li:last', an[i]).addClass('disabled');
 				} else {
-					$('li:gt(-3)', an[i]).removeClass('disabled'); //此处修改$('li:last', an[i]).removeClass('disabled');
+					$('li:last', an[i]).removeClass('disabled');
 				}
 			}
 		}

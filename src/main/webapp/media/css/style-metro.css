@@ -521,7 +521,7 @@ input[type="checkbox"].m-wrap:focus {
 input[class*="span"].m-wrap
 {
   float: none;
-  height: 25px !important;
+  height: 34px !important;
   margin-left: 0;
 }
 
@@ -589,7 +589,7 @@ textarea[class*="span"].m-wrap
 }
 
 .m-wrap.xsmall {
-  width: 100px !important;
+  width: 50px !important;
 }
 
 .m-wrap.small {
@@ -613,7 +613,7 @@ textarea[class*="span"].m-wrap
 }
 
 select.m-wrap.xsmall {
-  width: 100px !important;
+  width: 64px !important;
 }
 
 select.m-wrap.small {

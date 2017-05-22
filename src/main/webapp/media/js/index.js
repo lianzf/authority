@@ -648,7 +648,7 @@ var Index = function () {
 
             $('#dashboard-report-range').daterangepicker({
                 ranges: {
-                    'Today': ['today', 'today'],
+                    'Yesterday': ['today', 'today'],
                     'Yesterday': ['yesterday', 'yesterday'],
                     'Last 7 Days': [Date.today().add({
                             days: -6
@@ -664,20 +664,20 @@ var Index = function () {
                         })]
                 },
                 opens: (App.isRTL() ? 'right' : 'left'),
-                format: 'MM/dd/yyyy',
+                format: 'yyyy-MM-dd',
                 separator: ' to ',
                 startDate: Date.today().add({
                     days: -29
                 }),
                 endDate: Date.today(),
-                minDate: '01/01/2012',
-                maxDate: '12/31/2014',
+                minDate: '2012-01-01',
+                maxDate: '2020-10-10',
                 locale: {
-                    applyLabel: 'Submit',
-                    fromLabel: 'From',
-                    toLabel: 'To',
+                    applyLabel: '提交',
+                    fromLabel: '从',
+                    toLabel: '到',
                     customRangeLabel: 'Custom Range',
-                    daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                    daysOfWeek: ['aa', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
                     monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                     firstDay: 1
                 },
@@ -695,7 +695,7 @@ var Index = function () {
                     });
                     App.scrollTo();
                 }, 1000);
-                $('#dashboard-report-range span').html(start.toString('MMMM d, yyyy') + ' - ' + end.toString('MMMM d, yyyy'));
+                $('#dashboard-report-range span').html(start.toString('yyyy/MM/dd') + ' - ' + end.toString('yyyy/MM/dd'));
 
             });
 
@@ -703,7 +703,7 @@ var Index = function () {
 
             $('#dashboard-report-range span').html(Date.today().add({
                 days: -29
-            }).toString('MMMM d, yyyy') + ' - ' + Date.today().toString('MMMM d, yyyy'));
+            }).toString('yyyy/MM/dd') + ' - ' + Date.today().toString('yyyy/MM/dd'));
         },
 
         initIntro: function () {
@@ -713,7 +713,7 @@ var Index = function () {
 
             $.cookie('intro_show', 1);
 
-            setTimeout(function () {
+           /* setTimeout(function () {
                 var unique_id = $.gritter.add({
                     // (string | mandatory) the heading of the notification
                     title: 'Meet Metronic!',
@@ -888,7 +888,7 @@ var Index = function () {
                     repeat: 5
                 });
 
-            }, 60000);
+            }, 60000);*/
         }
 
     };
